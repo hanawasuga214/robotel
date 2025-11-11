@@ -1,9 +1,3 @@
-#include "esp_adc/adc_oneshot.h"
-
-// --- ADC (TCRT5000) ---
-adc_oneshot_unit_handle_t adc1_handle;
-// --- to stop ADC use: adc_oneshot_del_unit(adc1_handle);
-
 // Pin de test pentru TCRT (nodul fototransistor + pull-up)
 const int PIN_TCRT_M = 32;  // ADC1 (NU folosi ADC2 pe ESP32)
 const int PIN_TCRT_L = 33;
@@ -32,6 +26,16 @@ void setupSensors() {
   setupTCRT();
 }
 
+void loopSensors(unsigned long currentMillis) {
+  if (currentMillis - previousMillisSensor < INTERVAL_SENSOR) { return; }
+  previousMillisSensor = currentMillis;
+  // Read sensors
+  float distance;
+  int tcrt_raw_l, tcrt_raw_m, tcrt_raw_r;
+  readSensors(distance, tcrt_raw_l, tcrt_raw_m, tcrt_raw_r);
+  displayData(distance, tcrt_raw_l, tcrt_raw_m, tcrt_raw_r);
+}
+
 void setupSH1106() {
   // I2C + OLED
   Wire.begin(PIN_SDA, PIN_SCL);
@@ -51,45 +55,24 @@ void setupSH1106() {
 }
 
 void setupTCRT() {
-  // Create ADC1 unit (for GPIO32,33,34)
-  adc_oneshot_unit_init_cfg_t init_config = {
-    .unit_id = ADC_UNIT_1,
-  };
-  adc_oneshot_new_unit(&init_config, &adc1_handle);
-
-  // Common channel configuration
-  adc_oneshot_chan_cfg_t chan_config = {
-    .atten = ADC_ATTEN_DB_11,           // full 0-3.3 V range
-    .bitwidth = ADC_BITWIDTH_DEFAULT  // 12-bit
-  };
-
-  // Configure each ADC1 channel
-  adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_4, &chan_config); // GPIO32
-  adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_5, &chan_config); // GPIO33
-  adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_6, &chan_config); // GPIO34
-}
-
-void loopSensors(unsigned long currentMillis) {
-  if (currentMillis - previousMillisSensor < INTERVAL_SENSOR) { return; }
-  previousMillisSensor = currentMillis;
-  // Read sensors
-  float distance;
-  int tcrt_raw_l, tcrt_raw_m, tcrt_raw_r;
-  readSensors(distance, tcrt_raw_l, tcrt_raw_m, tcrt_raw_r);
-  displayData(distance, tcrt_raw_l, tcrt_raw_m, tcrt_raw_r);
+  // Configure ADC resolution and attenuation
+  analogReadResolution(12); // 12-bit resolution (0-4095)
+  analogSetPinAttenuation(PIN_TCRT_L, ADC_11db); // Full 0-3.3V range
+  analogSetPinAttenuation(PIN_TCRT_M, ADC_11db);
+  analogSetPinAttenuation(PIN_TCRT_R, ADC_11db);
+  
+  Serial.println("TCRT5000 sensors initialized (analogRead mode)");
 }
 
 void readSensors(float &dist, int &raw_l, int &raw_m, int &raw_r) {
   // Ultrasonic (HC-SR04)
   dist = readUltrasonicCM();
 
-  // TCRT5000
-  adc_oneshot_read(adc1_handle, ADC_CHANNEL_5, &raw_l); // GPIO33
-  adc_oneshot_read(adc1_handle, ADC_CHANNEL_4, &raw_m); // GPIO32
-  adc_oneshot_read(adc1_handle, ADC_CHANNEL_6, &raw_r); // GPIO34
-}
-
-float readUltrasonicCM(uint32_t timeout_us) {
+  // TCRT5000 using analogRead() - compatible with new I2S driver
+  raw_l = analogRead(PIN_TCRT_L); // GPIO33
+  raw_m = analogRead(PIN_TCRT_M); // GPIO32
+  raw_r = analogRead(PIN_TCRT_R); // GPIO34
+}float readUltrasonicCM(uint32_t timeout_us) {
   // Puls TRIG 10 µs
   digitalWrite(PIN_TRIG, LOW);
   delayMicroseconds(2);

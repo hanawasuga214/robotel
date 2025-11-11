@@ -30,7 +30,6 @@ void setupMotors() {
 void loopMotorsNonBlocking(unsigned long currentMillis) {
   // The 'loopMotors' logic is now executed here constantly, but actions only change
   // when the required time (MOVE/STOP_DURATION) has passed.
-
   if (currentMillis - previousMillisMotor >= (motorState % 2 == 0 ? MOVE_DURATION : STOP_DURATION)) {
     previousMillisMotor = currentMillis; 
     

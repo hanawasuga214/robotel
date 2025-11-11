@@ -11,10 +11,10 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(
 // -------------------------------------------SETUP FUNCTIONS---------------------------------------------------
 void setup() {
   Serial.begin(115200);
-  setupSensors();  // ADC sensors work now
-  setupAudio();    // Prints warning (disabled by default)
-  setupMotors(); // Uncomment when ready to test motors
-  setupWifi();   // Uncomment when ready to test WiFi
+  setupAudio();    // Initialize I2S first (before ADC)
+  setupSensors();  // Then initialize ADC continuous
+  setupMotors();   // Motor control
+  setupWifi();     // WiFi button
   delay(500);
 }
 

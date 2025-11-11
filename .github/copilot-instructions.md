@@ -33,42 +33,32 @@ This is an **Arduino multi-tab sketch** for an ESP32-based mobile robot. The mai
 ## Development Conventions
 
 ### Motor Control Pattern
-All motor functions take `speed` (0 or 1) as parameter:
+All motor functions take `speed` (0-255) as a parameter:
 ```cpp
 goForward(MOTOR_SPEED);    // Both motors forward
 turnLeft(MOTOR_SPEED);     // Left backward, right forward (pivot turn)
 stopMotors();              // All pins LOW
 ```
+State machine in `loopMotorsNonBlocking()` cycles through: Forward→Stop→Backward→Stop→Left→Stop→Right→Stop.
 
-**Uses basic GPIO** (`digitalWrite()`) instead of PWM to avoid ADC driver conflicts in ESP32 core 3.x:
-```cpp
-pinMode(pin, OUTPUT);                          // Setup
-digitalWrite(pin, speed > 0 ? HIGH : LOW);     // Control: on/off only (no speed control)
-```
-**Note:** PWM speed control (`ledcAttach`/`analogWrite`) conflicts with `adc_oneshot` in ESP32 core 3.3.3. Motors run at full speed (digital HIGH) or stopped (LOW).
-
-State machine in `loopMotorsNonBlocking()` cycles through: Forward→Stop→Backward→Stop→Left→Stop→Right→Stop (states 0-7, wraps at 40).
-
-### ADC Reading (ESP-IDF v5 API)
-Uses new `adc_oneshot` API, not deprecated `analogRead()`:
-```cpp
-adc_oneshot_unit_handle_t adc1_handle;
-adc_oneshot_read(adc1_handle, ADC_CHANNEL_4, &raw_value);
-```
-**Critical:** Only use ADC1 channels (GPIO32-39). ADC2 conflicts with WiFi on ESP32.
+### ADC Reading
+The project uses the legacy `analogRead()` for the TCRT5000 sensors. This works with the new I2S driver API (`i2s_std.h`) without conflicts.
+**Critical:** All ADC sensors are on ADC1 (GPIO32-39) to avoid conflicts with the WiFi module, which disables ADC2. The legacy `analogRead()` is compatible with the new I2S driver but NOT with the legacy I2S driver.
 
 ### Display Updates
-`MovementSensors.ino` uses U8g2 full buffer mode (`_F_` variant):
+`MovementSensors.ino` uses the U8g2 library in full buffer mode (`_F_` variant):
 1. `u8g2.clearBuffer()` - clear RAM buffer
 2. Draw operations (`drawStr`, `drawFrame`, `print`)
 3. `u8g2.sendBuffer()` - send to OLED in one transaction
 
 ### Audio Processing
-I2S samples are 32-bit left-aligned. Convert to 24-bit before processing:
+`Audio.ino` uses the **new I2S driver API** (`i2s_std.h`) to read 32-bit samples from the INMP441 microphone, converts them to 24-bit, and calculates RMS/dB levels.
 ```cpp
+i2s_channel_read(rx_handle, samples, sizeof(samples), &bytes_read, 0);
 int32_t sample = samples[i] >> 8;  // Right-shift to extract 24-bit data
+double db = 20 * log10(rms / 2147483647.0) + 120;  // Approximate dB scale
 ```
-Calculates RMS and approximates dB SPL for serial plotter visualization.
+The new I2S driver (`i2s_new_channel`, `i2s_channel_init_std_mode`) is compatible with `analogRead()` and avoids hardware conflicts present in the legacy driver.
 
 ## Build & Upload Workflow
 
@@ -76,37 +66,23 @@ Calculates RMS and approximates dB SPL for serial plotter visualization.
 
 **Board configuration:**
 - Board: "ESP32 Dev Module" or equivalent
-- Partition Scheme: Default (some I2S configs need larger app partition)
+- Partition Scheme: Default
 - Upload Speed: 921600 (or 115200 if unstable)
-- Port: Auto-detect via USB (CP2102/CH340 driver required)
+- Port: Auto-detect via USB
 
 **Dependencies (install via Library Manager):**
 - `U8g2` by olikraus (for SH1106 OLED)
-- ESP32 core includes `driver/i2s.h` and `esp_adc/adc_oneshot.h`
 
-**Common issues:**
-- **Driver conflict crash (ESP32 core 3.x)** - Both `analogWrite()` AND `ledcAttach()` conflict with `adc_oneshot` API. Workaround: use basic `digitalWrite()` (no PWM speed control). This is a known bug in ESP32 Arduino core 3.3.3
-- **I2S + ADC conflict** - `#include <driver/i2s.h>` triggers legacy ADC driver initialization even if code is commented out. `Audio.ino` uses `#ifdef ENABLE_AUDIO` guard to prevent compilation conflicts. Audio and ADC sensors cannot run simultaneously on ESP32 core 3.x
-- **WiFi kills ADC2** - All TCRT sensors deliberately on ADC1 (GPIO32-34)
-- **ECHO pin voltage** - HC-SR04 outputs 5V; use resistor divider to 3.3V or risk GPIO damage
+## Incomplete Features & Known Issues
 
-## Incomplete Features
-
-**Audio module (`Audio.ino`):** DISABLED by default due to I2S/ADC driver conflict in ESP32 core 3.x. To enable audio (breaks TCRT sensors), uncomment `#define ENABLE_AUDIO` at the top of `Audio.ino`. The I2S INMP441 microphone cannot coexist with `adc_oneshot` API on ESP32 Arduino core 3.3.3.
-
-**WiFi module (`Wifi.ino`):** Button press detection works, but actual WiFi connection code missing. Stub prints "Pressed button" to serial. Likely intended for remote control or telemetry.
-
-**Motor sequence auto-stop:** `loopMotorsNonBlocking()` commented out in main loop. When enabled, stops after `motorState > 40` (5 complete cycles). Remove condition for continuous operation.
-
-## Testing Notes
-
-- **Serial Monitor @ 115200 baud** - Audio module prints dB values for Arduino Serial Plotter
-- **OLED shows:** Ultrasonic distance (cm), visual bar graph, 3x TCRT raw ADC values (0-4095)
-- **Motor test:** Uncomment `loopMotorsNonBlocking()` in `Robotel.ino` to run movement demo
+- **WiFi Module (`Wifi.ino`):** Button press detection works, but the actual WiFi connection code is a stub. It only prints "Pressed button" to the serial monitor.
+- **Motor Sequence:** `loopMotorsNonBlocking()` is commented out in the main `loop()`. Uncomment it to run the pre-programmed movement demonstration.
+- **Driver Compatibility:** The new I2S driver API (`i2s_std.h`) is used instead of the legacy driver to avoid conflicts with ADC. If you see "CONFLICT! driver_ng" errors, ensure you're using the new API throughout.
 
 ## Key Files
 
 - `Robotel.ino` - Main setup/loop orchestrator
 - `MovementMotors.ino` - Motion primitives (forward/backward/turn/stop)
 - `MovementSensors.ino` - All sensors + OLED display logic
-- `Audio.ino` - Microphone sampling and dB calculation
+- `Audio.ino` - Microphone sampling (disabled by default)
+- `Wifi.ino` - WiFi connection stub
