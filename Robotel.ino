@@ -24,7 +24,7 @@ void loop() {
   // --- Task 1: Sensor Reading and Display Update ---
   loopSensors(currentMillis);
   // --- Task 2: Non-Blocking Motor Sequence ---
-  //loopMotorsNonBlocking(currentMillis); 
+  loopMotorsNonBlocking(currentMillis); 
   // --- Task 3: Wifi ---
   loopWifi(currentMillis);
   // --- Task 4: Audio Input and Output ---

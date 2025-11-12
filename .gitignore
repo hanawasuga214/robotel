@@ -1,0 +1,44 @@
+# Arduino build files
+*.hex
+*.elf
+*.bin
+*.map
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# Backup files
+*~
+*.bak
+*.swp
+*.swo
+
+# Environment/secrets (CRITICAL for future WiFi/API credentials!)
+secrets.h
+credentials.h
+config.h
+*.env
+.env
+
+# Python (if you add ML/AI scripts later)
+__pycache__/
+*.py[cod]
+*.so
+.Python
+venv/
+env/
+
+# Documentation build
+docs/_build/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+temp/
